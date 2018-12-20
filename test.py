@@ -4,8 +4,8 @@
 """
 
 import unittest
-from fizzbuzz import fizzbuzz
-from tennis import Score
+from fizzbuzz.fizzbuzz import fizzbuzz
+from fizzbuzz.tennis import Score
 
 class FizzbuzzTest(unittest.TestCase):
     """
@@ -121,17 +121,17 @@ class TennisTest(unittest.TestCase):
         self.assertEqual(score.inc_games(2), False)
         self.assertEqual(score.games, [[0, 1]])
 
-        score = Score(games=[[1, 0]])
+        score = Score(games=[[6, 4], [1, 0]])
         self.assertEqual(score.inc_games(1), False)
-        self.assertEqual(score.games, [[2, 0]])
+        self.assertEqual(score.games, [[6, 4], [2, 0]])
 
         score = Score(games=[[4, 4]])
         self.assertEqual(score.inc_games(1), False)
         self.assertEqual(score.games, [[5, 4]])
 
-        score = Score(games=[[5, 5]])
+        score = Score(games=[[6, 4], [5, 5]])
         self.assertEqual(score.inc_games(2), False)
-        self.assertEqual(score.games, [[5, 6]])
+        self.assertEqual(score.games, [[6, 4], [5, 6]])
 
     def test_inc_game_end(self):
         """
