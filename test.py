@@ -5,8 +5,8 @@
 """
 
 import unittest
-from fizzbuzz.fizzbuzz import fizzbuzz
-from tennis.tennis import Score
+from fizzbuzz_module.fizzbuzz import fizzbuzz
+from tennis_module.tennis import Score
 
 class FizzbuzzTest(unittest.TestCase):
     """
