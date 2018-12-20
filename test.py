@@ -44,6 +44,27 @@ class TennisTest(unittest.TestCase):
     """
         Unittest implementation for Tennis
     """
+
+    def game_loop(score, id_winner):
+        """
+            Example of the content of a game loop
+        """
+        is_match_over = False
+
+        if score.games[-1] == (6, 6):
+            score.tb_points, is_game_over = inc_tie_break(score.tb_points, id_winner)
+        else:
+            score.points, is_game_over = inc_points(score.points, id_winner)
+
+        if is_game_over:
+            score.tb_points = (0, 0) # TODO refactorate
+            score.games[-1], set_is_over = inc_game(score.games[-1], id_winner)
+            if set_is_over:
+                score.sets, is_match_over = inc_sets(score.sets, id_winner)
+
+        return is_match_over
+
+
     def test_inc_points_no_advantage(self):
         """
             Basic counting
@@ -91,6 +112,9 @@ class TennisTest(unittest.TestCase):
         self.assertEqual(inc_game([6, 5], 1), ((7, 5), True))
 
     def test_inc_game_tie_break(self):
+        """
+            Tie Break test
+        """
         self.assertEqual(inc_game([6, 5], 2), ((6, 6), False))
 
         self.assertEqual(inc_tie_break([5, 0], 1),   ((6, 0), False))
@@ -99,36 +123,67 @@ class TennisTest(unittest.TestCase):
         self.assertEqual(inc_tie_break([7, 6], 1),   ((8, 6), True))
         self.assertEqual(inc_tie_break([17, 16], 2), ((17, 17), False))
 
-    def test_game(self):
-        ###
+    def test_inc_sets(self):
+        """
+            Test increments sets
+        """
+        self.assertEqual(inc_sets((2, 2), 1), ((3, 2), True))
+        self.assertEqual(inc_sets((0, 2), 2), ((0, 3), True))
+        self.assertEqual(inc_sets((0, 0), 1), ((1, 0), False))
+
+    def test_score_class(self):
+        """
+            Test score class
+        """
         score = Score()
         self.assertEqual(inc_points(score.points, 1), ((15, 0), False))
 
-        ###
         score = Score()
         score.points = (40, 0)
         self.assertEqual(inc_points(score.points, 1), ((0, 0), True))
 
-        ###
+    def test_end_game_no_tie_break(self):
+        """
+            End game with no Tie break
+        """
+        score = Score()
+        score.points = (40, 0)
+        score.games = [(6, 0), (6, 0), (6, 5)]
+        score.sets = (2, 0)
+        score.tb_points = (0, 0)
+        is_match_over = False
+        id_winner = 1
+
+        self.assertEqual(TennisTest.game_loop(score, id_winner), True)
+
+    def test_end_game_tie_break(self):
+        """
+            End game with Tie break test
+        """
         score = Score()
         score.points = (40, 0)
         score.games = [(6, 0), (6, 0), (6, 6)]
-        score.sets = (2, 2)
+        score.sets = (2, 0)
         score.tb_points = (6, 0)
         is_match_over = False
         id_winner = 1
 
-        if score.games[-1] == (6, 6):
-            score.tb_points, is_game_over = inc_tie_break(score.tb_points, id_winner)
-        else:
-            score.points, is_game_over = inc_points(score.points, id_winner)
+        self.assertEqual(TennisTest.game_loop(score, id_winner), True)
 
-        if is_game_over:
-            score.games[-1], set_is_over = inc_game(score.games[-1], id_winner)
-            if set_is_over:
-                score.sets, is_match_over = inc_sets(score.sets, id_winner)
+    def test_no_end_game(self):
+        """
+            No end game, increment setss
+        """
+        score = Score()
+        score.points = (40, 0)
+        score.games = [(6, 0), (0, 5)]
+        score.sets = (1, 0)
+        score.tb_points = (0, 0)
+        is_match_over = False
+        id_winner = 2
 
-        self.assertEqual(is_match_over, True)
+        self.assertEqual(TennisTest.game_loop(score, id_winner), False)
+
 
 if __name__ == "__main__":
     unittest.main()
