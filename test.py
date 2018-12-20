@@ -1,3 +1,4 @@
+#!/dlip_ref/s_dlip/Tools/LDT_LAB/linux64/python/python-3.6.3/bin/python
 """
     Test module for fizzbuzz and tennis
 
@@ -5,7 +6,7 @@
 
 import unittest
 from fizzbuzz.fizzbuzz import fizzbuzz
-from fizzbuzz.tennis import Score
+from tennis.tennis import Score
 
 class FizzbuzzTest(unittest.TestCase):
     """
